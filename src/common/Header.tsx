@@ -5,7 +5,7 @@ import styles from '../styles/header.module.scss'
 const Header: React.FC = () => {
   return (
     <header className={styles.header}>
-      <Link to="/" className={styles.logo}>
+      <Link to="/dashboard" className={styles.logo}>
         JIRA
       </Link>
       <nav>
