@@ -17,9 +17,15 @@ nav {
   gap: 15px;
 }
 
+.navLinks {
+  display: flex;
+  align-items: center;
+}
+
 .navLink {
-  color: #fff;
+  margin-left: 1rem;
   text-decoration: none;
+  color: #007bff;
 }
 
 .navLink:hover {
