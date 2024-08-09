@@ -1,13 +1,3 @@
-import { rest } from 'msw'
+import { loginHandler, logoutHandler, signupHandler, userDetailsHandler } from './handlers/authHandler'
 
-export const handlers = [
-  rest.get('/api/projects', (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json([
-        { id: 1, name: 'Project A' },
-        { id: 2, name: 'Project B' },
-      ]),
-    )
-  }),
-]
+export const handlers = [...loginHandler, ...signupHandler, ...logoutHandler, ...userDetailsHandler]
