@@ -45,7 +45,7 @@ const Dashboard: React.FC = () => {
   }
 
   const handleProjectClick = (projectId: string) => {
-    navigate(`/dashboard/project/${projectId}`)
+    navigate(`/project/${projectId}`)
   }
 
   return (

@@ -21,7 +21,7 @@ const AppRoutes: React.FC = () => {
           </PrivateRoute>
         }
       />
-      <Route path="/dashboard/project/:projectId" element={<ProjectDetails />} />
+      <Route path="/project/:projectId" element={<ProjectDetails />} />
     </Routes>
   )
 }

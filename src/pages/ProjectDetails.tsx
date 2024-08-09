@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Box, Typography, CircularProgress, Grid } from '@mui/material'
 import { fetchProjectOverview, fetchTasksForProject } from '../services/dashboardService'
-import { ProjectOverviewCard, QuickStats } from '../components/organisms/dashboard'
+import ProjectOverviewCard from '../components/organisms/dashboard/ProjectOverviewCard'
 import styles from '../styles/dashboard.module.scss'
 
 const ProjectDetails: React.FC = () => {
@@ -65,10 +65,7 @@ const ProjectDetails: React.FC = () => {
       {projectOverview && stats && (
         <Grid container spacing={3}>
           <Grid item xs={12} className={styles.projectOverviewCard}>
-            <ProjectOverviewCard {...projectOverview} />
-          </Grid>
-          <Grid item xs={12} className={styles.quickStats}>
-            <QuickStats {...stats} />
+            <ProjectOverviewCard {...projectOverview} {...stats} />
           </Grid>
         </Grid>
       )}
