@@ -1,14 +1,11 @@
-import type { Preview } from '@storybook/react'
+import { Preview } from '@storybook/react';
+import RouterDecorator from './RouterDecorator';
 
 const preview: Preview = {
+  decorators: [RouterDecorator],
   parameters: {
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i,
-      },
-    },
+    layout: 'fullscreen',
   },
-}
+};
 
-export default preview
+export default preview;

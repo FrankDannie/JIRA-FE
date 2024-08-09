@@ -24,7 +24,8 @@
     "format": "prettier . --write",
     "lint": "eslint .",
     "lint:fix": "eslint src/ --fix",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "npx chromatic --project-token=chpt_c9ac859bad5dd0a"
   },
   "eslintConfig": {
     "extends": [
@@ -62,6 +63,7 @@
     "@types/node": "^22.1.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "chromatic": "^11.7.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
