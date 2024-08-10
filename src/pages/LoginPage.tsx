@@ -14,6 +14,7 @@ const LoginPage: React.FC = () => {
       const response = await login(username, password)
       localStorage.setItem('token', response.token)
       navigate('/dashboard')
+      window.location.reload()
     } catch (error) {
       console.error('Login failed', error)
     }

@@ -31,3 +31,47 @@ nav {
 .navLink:hover {
   text-decoration: underline;
 }
+
+.backButton {
+  margin-right: 0px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.profileMenu {
+  position: absolute;
+  right: 40px;
+}
+
+.profileIcon {
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  margin-left: 100%;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.logoutButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  font-size: 1rem;
+  width: 100%;
+  text-align: left;
+  padding: 5px 10px;
+}

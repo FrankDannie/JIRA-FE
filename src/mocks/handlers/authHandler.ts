@@ -4,7 +4,8 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 // Mock login handler
 export const loginHandler = [
   rest.post(`${API_BASE_URL}/auth/login/`, async (req, res, ctx) => {
-    const { username, password } = await req.json()
+    // Parse the form data from the request
+    const { username, password } = Object.fromEntries(new URLSearchParams(await req.text()))
 
     // Simulate user validation
     const validUser = username === 'testuser' && password === 'password123'
@@ -25,7 +26,22 @@ export const loginHandler = [
     return res(
       ctx.status(401),
       ctx.json({
-        message: 'Invalid credentials',
+        detail: [
+          {
+            type: 'missing',
+            loc: ['body', 'username'],
+            msg: 'Field required',
+            input: null,
+            url: 'https://errors.pydantic.dev/2.8/v/missing',
+          },
+          {
+            type: 'missing',
+            loc: ['body', 'password'],
+            msg: 'Field required',
+            input: null,
+            url: 'https://errors.pydantic.dev/2.8/v/missing',
+          },
+        ],
       }),
     )
   }),

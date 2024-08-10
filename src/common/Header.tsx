@@ -1,16 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { FaArrowLeft } from 'react-icons/fa'
+import { FaArrowLeft, FaUserCircle } from 'react-icons/fa'
 import styles from '../styles/header.module.scss'
-import { login } from '../services/authService'
 
 const Header: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!localStorage.getItem('token'))
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsLoggedIn(!!localStorage.getItem('token'))
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+    }
+  }, [])
 
   // Function to handle logout and navigation
   const handleLogout = () => {
-    // Implement your logout logic here
     localStorage.removeItem('token')
     setIsLoggedIn(false)
     navigate('/login')
@@ -18,19 +29,12 @@ const Header: React.FC = () => {
 
   // Function to go back to the previous page
   const handleGoBack = () => {
-    navigate(-1) // Go back one step in the browser history
+    navigate(-1)
   }
 
-  // Function to handle login (for testing purposes)
-  const handleLogin = async (username: string, password: string) => {
-    // Login logic
-    try {
-      const response = await login(username, password)
-      localStorage.setItem('token', response.token)
-      setIsLoggedIn(true)
-    } catch (error) {
-      console.error('Login failed', error)
-    }
+  // Toggle dropdown visibility
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen)
   }
 
   return (
@@ -38,7 +42,7 @@ const Header: React.FC = () => {
       <nav className={styles.nav}>
         {isLoggedIn ? (
           <button onClick={handleGoBack} className={styles.backButton}>
-            <FaArrowLeft /> {/* Use the back arrow icon */}
+            <FaArrowLeft />
           </button>
         ) : null}
         <Link to="/dashboard" className={styles.logo}>
@@ -54,6 +58,18 @@ const Header: React.FC = () => {
                 Sign Up
               </Link>
             </>
+          )}
+          {isLoggedIn && (
+            <div className={styles.profileMenu}>
+              <FaUserCircle className={styles.profileIcon} onClick={toggleDropdown} />
+              {dropdownOpen && (
+                <div className={styles.dropdown}>
+                  <button onClick={handleLogout} className={styles.logoutButton}>
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </nav>
