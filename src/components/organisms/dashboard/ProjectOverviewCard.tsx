@@ -8,6 +8,7 @@ interface ProjectOverviewCardProps {
   description: string
   start_date: string
   end_date: string
+  created_by: string
   totalTasks: number
   completedTasks: number
   pendingTasks: number
@@ -18,6 +19,7 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
   description,
   start_date,
   end_date,
+  created_by,
   totalTasks,
   completedTasks,
   pendingTasks,
@@ -29,6 +31,7 @@ const ProjectOverviewCard: React.FC<ProjectOverviewCardProps> = ({
         <Typography>{description}</Typography>
         <Typography>Start Date: {start_date}</Typography>
         <Typography>End Date: {end_date}</Typography>
+        <Typography>Created By: {created_by}</Typography>
       </Grid>
       <Grid item xs={6}>
         <QuickStats totalTasks={totalTasks} completedTasks={completedTasks} pendingTasks={pendingTasks} />

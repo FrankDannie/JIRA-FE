@@ -1,4 +1,5 @@
 import { rest } from 'msw'
+import { mockProjects, mockTasks } from '../mockdata'
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
@@ -35,66 +36,4 @@ export const tasksForProjectHandler = [
       return res(ctx.status(404), ctx.json({ message: 'Tasks not found for this project' }))
     }
   }),
-]
-
-const mockProjects = [
-  {
-    id: '1',
-    name: 'Project 1',
-    description: 'Description of Project Test',
-    start_date: '2024-08-01',
-    end_date: '2024-12-31',
-    created_by: 'user-123',
-    created_at: '2024-08-01T00:00:00Z',
-    updated_at: '2024-08-01T00:00:00Z',
-  },
-  {
-    id: '2',
-    name: 'Project 2',
-    description: 'Description of Project Test',
-    start_date: '2024-08-01',
-    end_date: '2024-12-31',
-    created_by: 'user-123',
-    created_at: '2024-08-01T00:00:00Z',
-    updated_at: '2024-08-01T00:00:00Z',
-  },
-]
-
-const mockTasks = [
-  {
-    id: '1',
-    title: 'Task 1',
-    description: 'Description of Task 1',
-    status: 'pending',
-    priority: 'high',
-    deadline: '2024-08-10',
-    project: '1',
-    assigned_to: 'user-123',
-    created_at: '2024-08-01T00:00:00Z',
-    updated_at: '2024-08-01T00:00:00Z',
-  },
-  {
-    id: '2',
-    title: 'Task 1',
-    description: 'Description of Task 2',
-    status: 'completed',
-    priority: 'high',
-    deadline: '2024-08-10',
-    project: '1',
-    assigned_to: 'user-123',
-    created_at: '2024-08-01T00:00:00Z',
-    updated_at: '2024-08-01T00:00:00Z',
-  },
-  {
-    id: '2',
-    title: 'Task 1',
-    description: 'Description of Task 2',
-    status: 'completed',
-    priority: 'high',
-    deadline: '2024-08-10',
-    project: '2',
-    assigned_to: 'user-123',
-    created_at: '2024-08-01T00:00:00Z',
-    updated_at: '2024-08-01T00:00:00Z',
-  },
 ]

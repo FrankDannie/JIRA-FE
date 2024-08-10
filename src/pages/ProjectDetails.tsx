@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { Box, Typography, CircularProgress, Grid } from '@mui/material'
 import { fetchProjectOverview, fetchTasksForProject } from '../services/dashboardService'
 import ProjectOverviewCard from '../components/organisms/dashboard/ProjectOverviewCard'
+import TaskBoard from '../components/organisms/task/TaskBoard '
 import styles from '../styles/dashboard.module.scss'
 
 const ProjectDetails: React.FC = () => {
@@ -69,6 +70,7 @@ const ProjectDetails: React.FC = () => {
           </Grid>
         </Grid>
       )}
+      <TaskBoard />
     </Box>
   )
 }
