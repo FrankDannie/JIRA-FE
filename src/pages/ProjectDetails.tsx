@@ -5,6 +5,7 @@ import { fetchProjectOverview, fetchTasksForProject } from '../services/dashboar
 import ProjectOverviewCard from '../components/organisms/dashboard/ProjectOverviewCard'
 import TaskBoard from '../components/organisms/task/TaskBoard '
 import styles from '../styles/dashboard.module.scss'
+import AddButton from '../components/atoms/AddButton'
 
 const ProjectDetails: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>()
@@ -12,6 +13,9 @@ const ProjectDetails: React.FC = () => {
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+  const handleAddClick = () => {
+    console.log('Add button clicked!')
+  }
 
   useEffect(() => {
     if (!projectId) return
@@ -70,6 +74,9 @@ const ProjectDetails: React.FC = () => {
           </Grid>
         </Grid>
       )}
+      <div className={styles.addButtonWrapper}>
+        <AddButton onClick={handleAddClick} label="Task" />
+      </div>
       <TaskBoard />
     </Box>
   )

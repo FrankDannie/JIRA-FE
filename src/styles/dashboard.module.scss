@@ -163,6 +163,16 @@
   }
 }
 
+.addButtonWrapper {
+  margin-bottom: 50px;
+}
+
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 /* Responsive Design */
 
 @media (max-width: 1200px) {

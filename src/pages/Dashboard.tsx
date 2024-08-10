@@ -3,6 +3,7 @@ import { Box, Grid, CircularProgress, Typography, Paper, Card, CardContent, Butt
 import { useNavigate } from 'react-router-dom'
 import { fetchAllProjects } from '../services/dashboardService'
 import styles from '../styles/dashboard.module.scss'
+import AddButton from '../components/atoms/AddButton'
 
 const Dashboard: React.FC = () => {
   const [projects, setProjects] = useState<any[]>([])
@@ -48,19 +49,31 @@ const Dashboard: React.FC = () => {
     navigate(`/project/${projectId}`)
   }
 
+  const handleAddClick = () => {
+    console.log('Add button clicked!')
+  }
+
   return (
     <Box className={styles.dashboardContainer}>
       <Grid container spacing={3}>
-        {projects.map((project) => (
-          <Grid item xs={12} sm={6} md={4} key={project.id}>
-            <Card className={styles.projectCard} onClick={() => handleProjectClick(project.id)}>
-              <CardContent>
-                <Typography variant="h6">{project.name}</Typography>
-                <Typography variant="body2">{project.description}</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+        <Grid item xs={12} className={styles.headerContainer}>
+          <h1>Projects</h1>
+
+          <AddButton onClick={handleAddClick} label="Project" />
+        </Grid>
+
+        <Grid container item xs={12} spacing={3} className={styles.projectCardsContainer}>
+          {projects.map((project) => (
+            <Grid item xs={12} sm={6} md={4} key={project.id}>
+              <Card className={styles.projectCard} onClick={() => handleProjectClick(project.id)}>
+                <CardContent>
+                  <Typography variant="h6">{project.name}</Typography>
+                  <Typography variant="body2">{project.description}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </Grid>
     </Box>
   )
