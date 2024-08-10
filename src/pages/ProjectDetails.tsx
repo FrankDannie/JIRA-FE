@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { Box, Typography, CircularProgress, Grid } from '@mui/material'
 import { fetchProjectOverview, fetchTasksForProject } from '../services/dashboardService'
@@ -6,6 +6,7 @@ import ProjectOverviewCard from '../components/organisms/dashboard/ProjectOvervi
 import TaskBoard from '../components/organisms/task/TaskBoard '
 import styles from '../styles/dashboard.module.scss'
 import AddButton from '../components/atoms/AddButton'
+import { Task } from '../types/taskTypes'
 
 const ProjectDetails: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>()
@@ -27,15 +28,7 @@ const ProjectDetails: React.FC = () => {
         setProjectOverview(projectData)
 
         const tasksData = await fetchTasksForProject(projectId)
-        const totalTasks = tasksData.length
-        const completedTasks = tasksData.filter((task: { status: string }) => task.status === 'completed').length
-        const pendingTasks = totalTasks - completedTasks
-
-        setStats({
-          totalTasks,
-          completedTasks,
-          pendingTasks,
-        })
+        updateStats(tasksData)
       } catch (error) {
         console.error('Error fetching project data:', error)
         setError('Failed to load project data')
@@ -46,6 +39,18 @@ const ProjectDetails: React.FC = () => {
 
     fetchData()
   }, [projectId])
+
+  const updateStats = useCallback((tasksData: Task[]) => {
+    const totalTasks = tasksData.length
+    const completedTasks = tasksData.filter((task) => task.status === 'completed').length
+    const pendingTasks = totalTasks - completedTasks
+
+    setStats({
+      totalTasks,
+      completedTasks,
+      pendingTasks,
+    })
+  }, [])
 
   if (loading) {
     return (
@@ -77,7 +82,7 @@ const ProjectDetails: React.FC = () => {
       <div className={styles.addButtonWrapper}>
         <AddButton onClick={handleAddClick} label="Task" />
       </div>
-      <TaskBoard />
+      <TaskBoard updateStats={updateStats} />
     </Box>
   )
 }

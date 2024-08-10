@@ -4,15 +4,9 @@ import { Box, Typography } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import { fetchTasksForProject, updateTask } from '../../../services/taskService'
 import styles from '../../../styles/dashboard.module.scss'
+import { Task, TaskBoardProps } from '../../../types/taskTypes'
 
-interface Task {
-  title: string
-  id: number
-  description: string
-  status: string
-}
-
-const TaskBoard: React.FC = () => {
+const TaskBoard: React.FC<TaskBoardProps> = ({ updateStats }) => {
   const { projectId } = useParams<{ projectId: string }>()
   const [toStartTasks, setToStartTasks] = useState<Task[]>([])
   const [inProgressTasks, setInProgressTasks] = useState<Task[]>([])
@@ -27,33 +21,30 @@ const TaskBoard: React.FC = () => {
         setToStartTasks(tasksData.filter((task: { status: string }) => task.status === 'to_start'))
         setInProgressTasks(tasksData.filter((task: { status: string }) => task.status === 'in_progress'))
         setCompletedTasks(tasksData.filter((task: { status: string }) => task.status === 'completed'))
+
+        updateStats(tasksData) // Update stats initially
       } catch (error) {
         console.error('Failed to fetch tasks:', error)
       }
     }
 
     fetchData()
-  }, [projectId])
+  }, [projectId, updateStats])
 
   const onDragEnd = async (result: DropResult) => {
     const { source, destination } = result
 
-    // If the task is dropped outside the list, do nothing
     if (!destination) return
 
-    // Handle moving tasks within the same list or between lists
     const sourceTasks = getTasksArray(source.droppableId)
     const destinationTasks = getTasksArray(destination.droppableId)
 
     const [movedTask] = sourceTasks.splice(source.index, 1)
 
-    // Check if the task is dropped in the same column but in a different position
     if (source.droppableId === destination.droppableId) {
-      // Rearrange the tasks within the same column
       sourceTasks.splice(destination.index, 0, movedTask)
       setTasksArray(source.droppableId, sourceTasks)
     } else {
-      // Move the task to a different column
       movedTask.status = destination.droppableId
       destinationTasks.splice(destination.index, 0, movedTask)
       setTasksArray(source.droppableId, sourceTasks)
@@ -62,16 +53,15 @@ const TaskBoard: React.FC = () => {
 
     try {
       await updateTask(projectId!, movedTask.id.toString(), movedTask)
+      const updatedTasks = [...toStartTasks, ...inProgressTasks, ...completedTasks]
+      updateStats(updatedTasks) // Update stats after task is moved
     } catch (error) {
       console.error('Failed to update task status:', error)
-      // Revert the changes if there's an error
       if (source.droppableId === destination.droppableId) {
-        // Revert within the same column
         sourceTasks.splice(destination.index, 1)
         sourceTasks.splice(source.index, 0, movedTask)
         setTasksArray(source.droppableId, sourceTasks)
       } else {
-        // Revert between different columns
         destinationTasks.splice(destination.index, 1)
         sourceTasks.splice(source.index, 0, movedTask)
         setTasksArray(source.droppableId, sourceTasks)
