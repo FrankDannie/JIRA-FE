@@ -3,13 +3,19 @@ export const login = async (username: string, password: string) => {
   const response = await fetch(`${API_BASE_URL}/auth/login/`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: JSON.stringify({ username, password }),
+    body: new URLSearchParams({
+      username,
+      password,
+    }),
   })
+
   if (!response.ok) {
-    throw new Error('Login failed')
+    const errorData = await response.json()
+    throw new Error(`Login failed: ${errorData.detail.map((e: { msg: string }) => e.msg).join(', ')}`)
   }
+
   return response.json()
 }
 

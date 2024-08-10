@@ -7,7 +7,7 @@ import styles from '../../../styles/dashboard.module.scss'
 
 interface Task {
   title: string
-  id: string
+  id: number
   description: string
   status: string
 }
@@ -61,7 +61,7 @@ const TaskBoard: React.FC = () => {
     }
 
     try {
-      await updateTask(projectId!, movedTask.id, movedTask)
+      await updateTask(projectId!, movedTask.id.toString(), movedTask)
     } catch (error) {
       console.error('Failed to update task status:', error)
       // Revert the changes if there's an error
@@ -139,7 +139,7 @@ const TaskBoard: React.FC = () => {
                     {column.title}
                   </Typography>
                   {column.tasks.map((task, index) => (
-                    <Draggable key={task.id} draggableId={task.id} index={index}>
+                    <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
                       {(provided) => (
                         <Box
                           ref={provided.innerRef}
