@@ -4,11 +4,14 @@ import { useNavigate } from 'react-router-dom'
 import { fetchAllProjects } from '../services/dashboardService'
 import styles from '../styles/dashboard.module.scss'
 import AddButton from '../components/atoms/AddButton'
+import Modal from '../components/molecules/Modal'
+import ProjectForm from '../components/organisms/project/ProjectForm'
 
 const Dashboard: React.FC = () => {
   const [projects, setProjects] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -45,12 +48,11 @@ const Dashboard: React.FC = () => {
     )
   }
 
+  const openModal = () => setIsModalOpen(true)
+  const closeModal = () => setIsModalOpen(false)
+
   const handleProjectClick = (projectId: string) => {
     navigate(`/project/${projectId}`)
-  }
-
-  const handleAddClick = () => {
-    console.log('Add button clicked!')
   }
 
   return (
@@ -58,8 +60,10 @@ const Dashboard: React.FC = () => {
       <Grid container spacing={3}>
         <Grid item xs={12} className={styles.headerContainer}>
           <h1>Projects</h1>
-
-          <AddButton onClick={handleAddClick} label="Project" />
+          <AddButton onClick={openModal} label="Project" />
+          <Modal isOpen={isModalOpen} onClose={closeModal} title="Create New Project">
+            <ProjectForm onClose={closeModal} />
+          </Modal>
         </Grid>
 
         <Grid container item xs={12} spacing={3} className={styles.projectCardsContainer}>

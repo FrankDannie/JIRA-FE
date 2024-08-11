@@ -1,5 +1,11 @@
 import { loginHandler, logoutHandler, signupHandler, userDetailsHandler } from './handlers/authHandler'
-import { allProjectsHandler, projectOverviewHandler, tasksForProjectHandler } from './handlers/dashboardhandlers'
+import {
+  allProjectsHandler,
+  createProjectHandler,
+  projectOverviewHandler,
+  tasksForProjectHandler,
+  updateProjectHandler,
+} from './handlers/dashboardhandlers'
 import { getTaskDetailsHandler, updateTaskHandler } from './handlers/taskHandlers'
 
 export const handlers = [
@@ -12,4 +18,6 @@ export const handlers = [
   ...tasksForProjectHandler,
   ...updateTaskHandler,
   ...getTaskDetailsHandler,
+  ...createProjectHandler,
+  ...updateProjectHandler,
 ]

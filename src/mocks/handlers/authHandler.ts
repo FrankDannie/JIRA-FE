@@ -4,44 +4,53 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 // Mock login handler
 export const loginHandler = [
   rest.post(`${API_BASE_URL}/auth/login/`, async (req, res, ctx) => {
-    // Parse the form data from the request
-    const { username, password } = Object.fromEntries(new URLSearchParams(await req.text()))
+    const contentType = req.headers.get('Content-Type') || ''
 
-    // Simulate user validation
-    const validUser = username === 'testuser' && password === 'password123'
+    let username, password
 
-    if (validUser) {
-      // Mock successful login with a JWT token
+    if (contentType.includes('application/json')) {
+      try {
+        ;({ username, password } = await req.json())
+      } catch (error) {
+        return res(
+          ctx.status(400),
+          ctx.json({
+            detail: 'Invalid JSON format',
+          }),
+        )
+      }
+    } else if (contentType.includes('application/x-www-form-urlencoded')) {
+      const parsedBody = Object.fromEntries(new URLSearchParams(await req.text()))
+      username = parsedBody.username
+      password = parsedBody.password
+    } else {
       return res(
-        ctx.status(200),
+        ctx.status(400),
         ctx.json({
-          access_token:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmcmFuayIsImV4cCI6MTcyMzExMzYzNH0.M_v1eOLl5ZXfBq1B6XP1wU6H1QnaI8uXILuUFAx4fdE',
-          token_type: 'bearer',
+          message: 'Unsupported content type',
         }),
       )
     }
 
-    // Mock login failure
+    // Simulate user authentication
+    const user = username === 'testuser' && password === 'password123'
+
+    if (!user) {
+      return res(
+        ctx.status(400),
+        ctx.json({
+          detail: 'Incorrect username or password',
+        }),
+      )
+    }
+
+    // Mock successful login with a JWT token
     return res(
-      ctx.status(401),
+      ctx.status(200),
       ctx.json({
-        detail: [
-          {
-            type: 'missing',
-            loc: ['body', 'username'],
-            msg: 'Field required',
-            input: null,
-            url: 'https://errors.pydantic.dev/2.8/v/missing',
-          },
-          {
-            type: 'missing',
-            loc: ['body', 'password'],
-            msg: 'Field required',
-            input: null,
-            url: 'https://errors.pydantic.dev/2.8/v/missing',
-          },
-        ],
+        token:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmcmFuayIsImV4cCI6MTcyMzM3Nzg0MH0.3nY_IpQAwEFUTLe14-PpXFQnty8rbaufeIJBr8YEN-A',
+        token_type: 'bearer',
       }),
     )
   }),
