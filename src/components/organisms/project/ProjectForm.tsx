@@ -15,11 +15,20 @@ interface ProjectFormProps {
   projectId?: string
 }
 
-const ProjectForm: React.FC<ProjectFormProps> = ({ onClose, initialData, isEditMode = false, projectId }) => {
+const ProjectForm: React.FC<ProjectFormProps> = ({ onClose, initialData, isEditMode, projectId }) => {
   const [name, setName] = useState(initialData?.name || '')
   const [description, setDescription] = useState(initialData?.description || '')
   const [startDate, setStartDate] = useState(initialData?.start_date || '')
   const [endDate, setEndDate] = useState(initialData?.end_date || '')
+
+  useEffect(() => {
+    if (initialData) {
+      setName(initialData.name)
+      setDescription(initialData.description)
+      setStartDate(initialData.start_date)
+      setEndDate(initialData.end_date)
+    }
+  }, [initialData])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,7 +41,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onClose, initialData, isEditM
         await createProject(projectData)
       }
       onClose()
-      window.location.reload() // Optional: Refresh page after successful operation
+      // window.location.reload()
     } catch (error) {
       console.error('Error submitting project form', error)
     }

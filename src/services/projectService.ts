@@ -33,10 +33,12 @@ export const updateProject = async (
     end_date: string
   },
 ) => {
+  const token = localStorage.getItem('token')
   const response = await fetch(`${API_BASE_URL}/projects/${projectId}/`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(projectData),
   })

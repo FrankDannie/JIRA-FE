@@ -14,7 +14,8 @@ const Dashboard: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [selectedProject, setSelectedProject] = useState<string | null>(null)
+  const [selectedProject, setSelectedProject] = useState<any | null>(null)
+  const [isEditing, setIsEditing] = useState<boolean>(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -23,7 +24,6 @@ const Dashboard: React.FC = () => {
         const projectsData = await fetchAllProjects()
         setProjects(projectsData)
       } catch (error) {
-        console.error('Error fetching projects:', error)
         setError('Failed to load projects')
       } finally {
         setLoading(false)
@@ -33,8 +33,15 @@ const Dashboard: React.FC = () => {
     fetchProjects()
   }, [])
 
-  const openModal = () => setIsModalOpen(true)
-  const closeModal = () => setIsModalOpen(false)
+  const openModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setSelectedProject(null)
+    setIsEditing(false)
+  }
 
   const handleProjectClick = (projectId: string) => {
     navigate(`/project/${projectId}`)
@@ -43,7 +50,7 @@ const Dashboard: React.FC = () => {
   const handleMoreOptionsClick = (event: React.MouseEvent<HTMLElement>, projectId: string) => {
     event.stopPropagation()
     setAnchorEl(event.currentTarget)
-    setSelectedProject(projectId)
+    setSelectedProject(projects.find((p) => p.id === projectId))
   }
 
   const handleMenuClose = () => {
@@ -54,9 +61,12 @@ const Dashboard: React.FC = () => {
   const handleMenuItemClick = (action: string) => {
     handleMenuClose()
     if (action === 'open') {
-      handleProjectClick(selectedProject!)
+      handleProjectClick(selectedProject.id)
     } else if (action === 'edit') {
-      // Handle edit action here
+      const projectToEdit = projects.find((p) => p.id === selectedProject.id)
+      setSelectedProject(projectToEdit)
+      setIsEditing(true)
+      setIsModalOpen(true)
     } else if (action === 'delete') {
       // Handle delete action here
     }
@@ -86,8 +96,13 @@ const Dashboard: React.FC = () => {
         <Grid item xs={12} className={styles.headerContainer}>
           <h1>Projects</h1>
           <AddButton onClick={openModal} label="Project" />
-          <Modal isOpen={isModalOpen} onClose={closeModal} title="Create New Project">
-            <ProjectForm onClose={closeModal} />
+          <Modal isOpen={isModalOpen} onClose={closeModal} title={isEditing ? 'Edit Project' : 'Create New Project'}>
+            <ProjectForm
+              onClose={closeModal}
+              initialData={isEditing ? projects.find((p) => p.id === selectedProject.id) : undefined}
+              isEditMode={isEditing}
+              projectId={selectedProject}
+            />
           </Modal>
         </Grid>
 
