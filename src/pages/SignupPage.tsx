@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signup } from '../services/authService'
 import styles from '../styles/auth.module.scss'
+import InputField from '../components/molecules/InputField'
+import Button from '../components/atoms/Button'
 
 const SignupPage: React.FC = () => {
   const [username, setUsername] = useState('')
@@ -24,19 +26,28 @@ const SignupPage: React.FC = () => {
       <div className={styles.formContainer}>
         <h2>Sign Up</h2>
         <form onSubmit={handleSignup}>
-          <label htmlFor="username">Username</label>
-          <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-          <label htmlFor="email">Email</label>
-          <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
+          <InputField
+            label="Username"
+            type="text"
+            placeholder="Enter your username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <InputField
+            label="Email"
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <InputField
+            label="Password"
             type="password"
+            placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
-          <button type="submit">Sign Up</button>
+          <Button label="Submit" onClick={handleSignup} />
         </form>
         <div className={styles.footer}>
           <p>

@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { login } from '../services/authService'
 import styles from '../styles/auth.module.scss'
+import Button from '../components/atoms/Button'
+import InputField from '../components/molecules/InputField'
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('')
@@ -25,17 +27,21 @@ const LoginPage: React.FC = () => {
       <div className={styles.formContainer}>
         <h2>Login</h2>
         <form onSubmit={handleLogin}>
-          <label htmlFor="username">Username</label>
-          <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
+          <InputField
+            label="Username"
+            type="text"
+            placeholder="Enter your username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <InputField
+            label="Password"
             type="password"
+            placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
-          <button type="submit">Login</button>
+          <Button label="Login" onClick={handleLogin} />
         </form>
         <div className={styles.footer}>
           <p>
