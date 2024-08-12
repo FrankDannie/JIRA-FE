@@ -49,3 +49,23 @@ export const updateProject = async (
 
   return response.json()
 }
+
+export const deleteProject = async (projectId: string) => {
+  try {
+    const token = localStorage.getItem('token')
+    const response = await fetch(`${API_BASE_URL}/projects/${projectId}/`, {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    if (!response.ok) {
+      throw new Error('Failed to fetch project overview')
+    }
+    return response.json()
+  } catch (error) {
+    console.error('Error fetching project overview:', error)
+    throw error
+  }
+}

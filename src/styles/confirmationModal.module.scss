@@ -1,0 +1,25 @@
+.modalContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContent {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  text-align: center;
+  outline: 0;
+}
+
+.modalDescription {
+  margin: 20px 0;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 40px;
+  justify-content: space-between;
+  padding-left: 25%;
+  width: 50%;
+}

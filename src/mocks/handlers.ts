@@ -2,6 +2,7 @@ import { loginHandler, logoutHandler, signupHandler, userDetailsHandler } from '
 import {
   allProjectsHandler,
   createProjectHandler,
+  deleteProjectHandler,
   projectOverviewHandler,
   tasksForProjectHandler,
   updateProjectHandler,
@@ -20,4 +21,5 @@ export const handlers = [
   ...getTaskDetailsHandler,
   ...createProjectHandler,
   ...updateProjectHandler,
+  ...deleteProjectHandler,
 ]

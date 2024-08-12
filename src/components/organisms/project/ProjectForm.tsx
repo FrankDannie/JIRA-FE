@@ -41,7 +41,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onClose, initialData, isEditM
         await createProject(projectData)
       }
       onClose()
-      // window.location.reload()
+      window.location.reload()
     } catch (error) {
       console.error('Error submitting project form', error)
     }

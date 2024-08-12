@@ -89,3 +89,16 @@ export const updateProjectHandler = [
     )
   }),
 ]
+
+export const deleteProjectHandler = [
+  rest.delete(`${API_BASE_URL}/projects/:projectId`, (req, res, ctx) => {
+    const { projectId } = req.params
+    const project = mockProjects.filter((p) => p.id === projectId)
+
+    if (project.length > 0) {
+      return res(ctx.status(204))
+    } else {
+      return res(ctx.status(404), ctx.json({ message: 'No such Project to delete' }))
+    }
+  }),
+]

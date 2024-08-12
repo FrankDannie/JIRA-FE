@@ -7,12 +7,15 @@ import AddButton from '../components/atoms/AddButton'
 import Modal from '../components/molecules/Modal'
 import ProjectForm from '../components/organisms/project/ProjectForm'
 import { FaEllipsisV } from 'react-icons/fa'
+import { deleteProject } from '../services/projectService'
+import ConfirmationModal from '../components/modals/ConfirmationModal'
 
 const Dashboard: React.FC = () => {
   const [projects, setProjects] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedProject, setSelectedProject] = useState<any | null>(null)
   const [isEditing, setIsEditing] = useState<boolean>(false)
@@ -24,6 +27,7 @@ const Dashboard: React.FC = () => {
         const projectsData = await fetchAllProjects()
         setProjects(projectsData)
       } catch (error) {
+        console.error('Error fetching projects:', error)
         setError('Failed to load projects')
       } finally {
         setLoading(false)
@@ -35,6 +39,7 @@ const Dashboard: React.FC = () => {
 
   const openModal = () => {
     setIsModalOpen(true)
+    setIsEditing(false)
   }
 
   const closeModal = () => {
@@ -43,32 +48,55 @@ const Dashboard: React.FC = () => {
     setIsEditing(false)
   }
 
+  const openConfirmationModal = () => {
+    setIsConfirmationModalOpen(true)
+  }
+
+  const closeConfirmationModal = () => {
+    setIsConfirmationModalOpen(false)
+  }
+
   const handleProjectClick = (projectId: string) => {
     navigate(`/project/${projectId}`)
   }
 
-  const handleMoreOptionsClick = (event: React.MouseEvent<HTMLElement>, projectId: string) => {
+  const handleMoreOptionsClick = (event: React.MouseEvent<HTMLElement>, project: any) => {
     event.stopPropagation()
     setAnchorEl(event.currentTarget)
-    setSelectedProject(projects.find((p) => p.id === projectId))
+    setSelectedProject(project) // Set entire project object
   }
 
   const handleMenuClose = () => {
     setAnchorEl(null)
-    setSelectedProject(null)
   }
 
   const handleMenuItemClick = (action: string) => {
     handleMenuClose()
     if (action === 'open') {
-      handleProjectClick(selectedProject.id)
+      if (selectedProject) {
+        handleProjectClick(selectedProject.id)
+      }
     } else if (action === 'edit') {
-      const projectToEdit = projects.find((p) => p.id === selectedProject.id)
-      setSelectedProject(projectToEdit)
-      setIsEditing(true)
-      setIsModalOpen(true)
+      if (selectedProject) {
+        setIsEditing(true)
+        setIsModalOpen(true)
+      }
     } else if (action === 'delete') {
-      // Handle delete action here
+      openConfirmationModal()
+    }
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (selectedProject && selectedProject.id) {
+      try {
+        console.log('Deleting project with ID:', selectedProject.id) // Debug log
+        await deleteProject(selectedProject.id)
+        setProjects((prevProjects) => prevProjects.filter((project) => project.id !== selectedProject.id))
+      } catch (error) {
+        console.error('Error deleting project:', error)
+      } finally {
+        closeConfirmationModal()
+      }
     }
   }
 
@@ -98,10 +126,10 @@ const Dashboard: React.FC = () => {
           <AddButton onClick={openModal} label="Project" />
           <Modal isOpen={isModalOpen} onClose={closeModal} title={isEditing ? 'Edit Project' : 'Create New Project'}>
             <ProjectForm
+              initialData={isEditing ? selectedProject : undefined}
               onClose={closeModal}
-              initialData={isEditing ? projects.find((p) => p.id === selectedProject.id) : undefined}
               isEditMode={isEditing}
-              projectId={selectedProject}
+              projectId={selectedProject?.id}
             />
           </Modal>
         </Grid>
@@ -116,10 +144,7 @@ const Dashboard: React.FC = () => {
                       <Typography variant="h6">{project.name}</Typography>
                       <Typography variant="body2">{project.description}</Typography>
                     </Box>
-                    <IconButton
-                      className={styles.options}
-                      onClick={(event) => handleMoreOptionsClick(event, project.id)}
-                    >
+                    <IconButton className={styles.options} onClick={(event) => handleMoreOptionsClick(event, project)}>
                       <FaEllipsisV />
                     </IconButton>
                   </Box>
@@ -135,6 +160,14 @@ const Dashboard: React.FC = () => {
         <MenuItem onClick={() => handleMenuItemClick('edit')}>Edit</MenuItem>
         <MenuItem onClick={() => handleMenuItemClick('delete')}>Delete</MenuItem>
       </Menu>
+
+      <ConfirmationModal
+        isOpen={isConfirmationModalOpen}
+        onClose={closeConfirmationModal}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Project"
+        description="Are you sure you want to delete this project? This action cannot be undone."
+      />
     </Box>
   )
 }
