@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Box, Typography, CircularProgress, Grid } from '@mui/material'
 import { fetchProjectOverview, fetchTasksForProject } from '../services/dashboardService'
 import ProjectOverviewCard from '../components/organisms/dashboard/ProjectOverviewCard'
@@ -18,9 +18,7 @@ const ProjectDetails: React.FC = () => {
   })
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
-  const handleAddClick = () => {
-    console.log('Add button clicked!')
-  }
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!projectId) return
@@ -54,6 +52,14 @@ const ProjectDetails: React.FC = () => {
       pendingTasks,
     })
   }, [])
+
+  const handleAddClick = () => {
+    navigate(`/projects/${projectId}/tasks/new`)
+  }
+
+  const handleTaskClick = (taskId: string) => {
+    navigate(`/projects/${projectId}/tasks/${taskId}`)
+  }
 
   if (loading) {
     return (

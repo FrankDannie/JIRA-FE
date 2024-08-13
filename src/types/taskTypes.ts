@@ -3,6 +3,9 @@ export interface Task {
   id: number
   description: string
   status: string
+  priority: string
+  deadline: string
+  assigned_to: string
 }
 
 export interface TaskBoardProps {

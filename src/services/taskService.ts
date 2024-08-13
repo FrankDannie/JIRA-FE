@@ -38,15 +38,43 @@ export const updateTask = async (
     assigned_to?: string
   },
 ) => {
+  const token = localStorage.getItem('token')
   const response = await fetch(`${API_BASE_URL}/projects/${projectId}/tasks/${taskId}/`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(updatedTask),
   })
   if (!response.ok) {
     throw new Error('Failed to update task')
+  }
+  return response.json()
+}
+
+export const createTask = async (
+  projectId: string,
+  updatedTask: {
+    title?: string
+    description?: string
+    status?: string
+    priority?: string
+    deadline?: string
+    assigned_to?: string
+  },
+) => {
+  const token = localStorage.getItem('token')
+  const response = await fetch(`${API_BASE_URL}/projects/${projectId}/tasks/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(updatedTask),
+  })
+  if (!response.ok) {
+    throw new Error('Failed to create task')
   }
   return response.json()
 }

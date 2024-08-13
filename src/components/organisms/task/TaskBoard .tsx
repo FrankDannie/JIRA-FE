@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
 import { Box, Typography } from '@mui/material'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { fetchTasksForProject, updateTask } from '../../../services/taskService'
 import styles from '../../../styles/dashboard.module.scss'
 import { Task, TaskBoardProps } from '../../../types/taskTypes'
@@ -11,6 +11,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ updateStats }) => {
   const [toStartTasks, setToStartTasks] = useState<Task[]>([])
   const [inProgressTasks, setInProgressTasks] = useState<Task[]>([])
   const [completedTasks, setCompletedTasks] = useState<Task[]>([])
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!projectId) return
@@ -117,6 +118,10 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ updateStats }) => {
     },
   }
 
+  const handleTaskClick = (taskId: string) => {
+    navigate(`/projects/${projectId}/tasks/${taskId}`)
+  }
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Box className={styles.boardContainer}>
@@ -136,6 +141,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ updateStats }) => {
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                           className={styles.taskCard}
+                          onClick={() => handleTaskClick(task.id.toString())}
                         >
                           <Typography variant="h5">{task.title}</Typography>
                           <Typography variant="body2">{task.description}</Typography>
