@@ -21,7 +21,7 @@ const Comments: React.FC = () => {
 
   const handleAddComment = async () => {
     if (projectId && taskId && newComment.trim()) {
-      await createComment(projectId, taskId, { content: newComment })
+      await createComment(projectId, taskId, newComment)
       setNewComment('')
       const updatedComments = await getComments(projectId, taskId)
       setComments(updatedComments)
