@@ -1,4 +1,5 @@
 import { loginHandler, logoutHandler, signupHandler, userDetailsHandler } from './handlers/authHandler'
+import { createCommentsHandler, getCommentsHandler, updateCommentHandler } from './handlers/commentsHandler'
 import {
   allProjectsHandler,
   createProjectHandler,
@@ -22,4 +23,7 @@ export const handlers = [
   ...createProjectHandler,
   ...updateProjectHandler,
   ...deleteProjectHandler,
+  ...getCommentsHandler,
+  ...createCommentsHandler,
+  ...updateCommentHandler,
 ]
