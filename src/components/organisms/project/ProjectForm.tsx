@@ -84,6 +84,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onClose, initialData, isEditM
         value={formData.description}
         onChange={handleChange('description')}
         showError={errors.description}
+        multiline
+        rows={10}
       />
       <InputField
         label="Start Date"
