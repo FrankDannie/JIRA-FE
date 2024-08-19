@@ -96,6 +96,7 @@ const Dashboard: React.FC = () => {
         console.error('Error deleting project:', error)
       } finally {
         closeConfirmationModal()
+        window.location.reload()
       }
     }
   }

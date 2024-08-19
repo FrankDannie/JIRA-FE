@@ -78,3 +78,17 @@ export const createTask = async (
   }
   return response.json()
 }
+
+export const deleteTask = async (projectId: string, taskId: string) => {
+  const token = localStorage.getItem('token')
+  const response = await fetch(`${API_BASE_URL}/projects/${projectId}/tasks/${taskId}/`, {
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to delete task ${taskId} in project ${projectId}`)
+  }
+}

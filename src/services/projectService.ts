@@ -61,7 +61,7 @@ export const deleteProject = async (projectId: string) => {
       },
     })
     if (!response.ok) {
-      throw new Error('Failed to fetch project overview')
+      throw new Error(`Failed to delete project ${projectId}`)
     }
     return response.json()
   } catch (error) {

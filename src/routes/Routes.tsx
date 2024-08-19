@@ -21,7 +21,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/projects/:projectId/tasks/:taskId" element={<TaskDetails />} />
         <Route path="/projects/:projectId/tasks/new" element={<TaskForm mode="create" />} />
       </Route>
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route path="*" element={<Navigate to="/dashboard" />} />
     </Routes>
   )
 }

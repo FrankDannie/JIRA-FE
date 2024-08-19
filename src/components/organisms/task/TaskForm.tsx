@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { TextField, Button, Box, MenuItem, Grid } from '@mui/material'
+import { TextField, Button, Box, MenuItem, Grid, FormHelperText } from '@mui/material'
 import styles from '../../../styles/taskForm.module.scss'
-import { createTask, getTaskDetails, updateTask } from '../../../services/taskService'
+import { createTask, getTaskDetails, updateTask, deleteTask } from '../../../services/taskService'
 import { Task } from '../../../types/taskTypes'
 import Comments from '../comments/Comments'
 
@@ -18,6 +18,12 @@ const TaskForm: React.FC<{ mode: 'create' | 'edit' }> = ({ mode }) => {
     assigned_to: '',
   })
   const [isSaveEnabled, setIsSaveEnabled] = useState(false)
+  const [errors, setErrors] = useState({
+    title: '',
+    status: '',
+    priority: '',
+    deadline: '',
+  })
 
   useEffect(() => {
     if (mode === 'edit' && taskId) {
@@ -31,6 +37,17 @@ const TaskForm: React.FC<{ mode: 'create' | 'edit' }> = ({ mode }) => {
     }
   }, [mode, projectId, taskId])
 
+  const validateFields = () => {
+    const newErrors = {
+      title: task.title ? '' : '*required',
+      status: task.status ? '' : '*required',
+      priority: task.priority ? '' : '*required',
+      deadline: task.deadline ? '' : '*required',
+    }
+    setErrors(newErrors)
+    return !Object.values(newErrors).some((error) => error !== '')
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setTask((prevTask) => ({
@@ -38,10 +55,14 @@ const TaskForm: React.FC<{ mode: 'create' | 'edit' }> = ({ mode }) => {
       [name]: value,
     }))
     setIsSaveEnabled(true)
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: '',
+    }))
   }
 
   const handleSave = async () => {
-    if (projectId) {
+    if (validateFields() && projectId) {
       if (mode === 'create') {
         await createTask(projectId, task)
       } else if (mode === 'edit' && taskId) {
@@ -51,11 +72,27 @@ const TaskForm: React.FC<{ mode: 'create' | 'edit' }> = ({ mode }) => {
     }
   }
 
+  const handleDelete = async () => {
+    if (projectId && taskId) {
+      await deleteTask(projectId, taskId)
+      navigate(`/project/${projectId}`)
+    }
+  }
+
   return (
     <Box className={styles.taskFormContainer} sx={{ padding: 3 }}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
-          <TextField name="title" label="Title" value={task.title} onChange={handleChange} fullWidth margin="normal" />
+          <TextField
+            name="title"
+            label="Title"
+            value={task.title}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            error={!!errors.title}
+            helperText={errors.title && <FormHelperText error>{errors.title}</FormHelperText>}
+          />
           <TextField
             name="description"
             label="Description"
@@ -76,6 +113,8 @@ const TaskForm: React.FC<{ mode: 'create' | 'edit' }> = ({ mode }) => {
             select
             fullWidth
             margin="normal"
+            error={!!errors.status}
+            helperText={errors.status && <FormHelperText error>{errors.status}</FormHelperText>}
           >
             <MenuItem value="to_start">To Start</MenuItem>
             <MenuItem value="in_progress">In Progress</MenuItem>
@@ -89,6 +128,8 @@ const TaskForm: React.FC<{ mode: 'create' | 'edit' }> = ({ mode }) => {
             select
             fullWidth
             margin="normal"
+            error={!!errors.priority}
+            helperText={errors.priority && <FormHelperText error>{errors.priority}</FormHelperText>}
           >
             <MenuItem value="low">Low</MenuItem>
             <MenuItem value="medium">Medium</MenuItem>
@@ -103,6 +144,8 @@ const TaskForm: React.FC<{ mode: 'create' | 'edit' }> = ({ mode }) => {
             fullWidth
             margin="normal"
             InputLabelProps={{ shrink: true }}
+            error={!!errors.deadline}
+            helperText={errors.deadline && <FormHelperText error>{errors.deadline}</FormHelperText>}
           />
           <TextField
             name="assigned_to"
@@ -112,9 +155,20 @@ const TaskForm: React.FC<{ mode: 'create' | 'edit' }> = ({ mode }) => {
             fullWidth
             margin="normal"
           />
-          <Button variant="contained" color="primary" onClick={handleSave} disabled={!isSaveEnabled}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSave}
+            disabled={!isSaveEnabled}
+            sx={{ marginRight: 2 }}
+          >
             {mode === 'create' ? 'Create Task' : 'Save Changes'}
           </Button>
+          {mode === 'edit' && (
+            <Button variant="contained" color="error" onClick={handleDelete}>
+              Delete Task
+            </Button>
+          )}
         </Grid>
       </Grid>
       <Box sx={{ marginTop: 3 }}>
